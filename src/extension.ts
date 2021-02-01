@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "helloworld2" is now active!');
+  console.log('Congratulations, your extension "producdev" is now active!');
 
   interface LooseObject {
     [key: string]: any;
@@ -13,37 +13,30 @@ export function activate(context: vscode.ExtensionContext) {
 
   let keystrokes: LooseObject = {};
 
-  let disposable = vscode.commands.registerCommand(
-    "helloworld2.helloWorld",
-    () => {
-      vscode.window.onDidChangeActiveTextEditor((event) => {
-        vscode.window.showInformationMessage("active editor changed");
-        if (timestamp > 0 && currentFile) {
-          if (time[currentFile]) {
-            time[currentFile] += Date.now() - timestamp;
-          } else {
-            time[currentFile] = Date.now() - timestamp;
-          }
-        }
-        timestamp = Date.now();
-        if (typeof event?.document.fileName === "string") {
-          currentFile = event?.document.fileName;
-        }
-      });
-
-      vscode.workspace.onDidChangeTextDocument((event) => {
-        if (currentFile) {
-          if (keystrokes[currentFile]) {
-            keystrokes[currentFile]++;
-          } else {
-            keystrokes[currentFile] = 1;
-          }
-        }
-      });
+  vscode.window.onDidChangeActiveTextEditor((event) => {
+    if (timestamp > 0 && currentFile) {
+      if (time[currentFile]) {
+        time[currentFile] += Date.now() - timestamp;
+      } else {
+        time[currentFile] = Date.now() - timestamp;
+      }
     }
-  );
+    timestamp = Date.now();
+    if (typeof event?.document.fileName === "string") {
+      currentFile = event?.document.fileName;
+    }
+    console.log(time);
+  });
 
-  context.subscriptions.push(disposable);
+  vscode.workspace.onDidChangeTextDocument((event) => {
+    if (currentFile) {
+      if (keystrokes[currentFile]) {
+        keystrokes[currentFile]++;
+      } else {
+        keystrokes[currentFile] = 1;
+      }
+    }
+  });
 }
 
 export function deactivate() {}
