@@ -1,4 +1,7 @@
 import * as vscode from "vscode";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "producdev" is now active!');
