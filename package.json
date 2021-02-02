@@ -30,7 +30,8 @@
     "test-watch": "tsc -watch -p ./",
     "pretest": "npm run test-compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "start": "nodemon server/index.js"
   },
   "devDependencies": {
     "@types/vscode": "^1.52.0",
@@ -49,6 +50,7 @@
     "webpack-cli": "^4.2.0"
   },
   "dependencies": {
+    "express": "^4.17.1",
     "firebase": "^8.2.5"
   }
 }
