@@ -19,18 +19,18 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id":"producdev-sidebar-view",
-          "title":"ProducDev",
-          "icon":"media/root-folder.svg"
+          "id": "producdev-sidebar-view",
+          "title": "ProducDev",
+          "icon": "media/root-folder.svg"
         }
       ]
     },
     "views": {
-      "ProducDev-sidebar-view":[
+      "producdev-sidebar-view": [
         {
-          "type":"webview",
-          "id":"producdev-sidebar",
-          "name":"ProducDev",
+          "type": "webview",
+          "id": "producdev-sidebar",
+          "name": "ProducDev",
           "icon": "media/root-folder.svg",
           "contextualTitle": "ProducDev"
         }

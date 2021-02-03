@@ -8,19 +8,20 @@ import { TokenManager } from "./TokenManager";
 // import "firebase/database";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "producdev" is now active!');
+  const sidebarProvider = new SidebarProvider(context.extensionUri);
+
+  TokenManager.globalState = context.globalState;
 
   interface LooseObject {
     [key: string]: any;
   }
-  
+
   let time: LooseObject = {};
   let currentFile: string = "";
   let timestamp: number = -1;
 
   let keystrokes: LooseObject = {};
   vscode.window.onDidChangeActiveTextEditor((event) => {
-    
     if (timestamp > 0 && currentFile) {
       if (time[currentFile]) {
         time[currentFile] += Date.now() - timestamp;
@@ -32,7 +33,6 @@ export function activate(context: vscode.ExtensionContext) {
     if (typeof event?.document.fileName === "string") {
       currentFile = event?.document.fileName;
     }
-    console.log(time);
   });
 
   vscode.workspace.onDidChangeTextDocument((event) => {
