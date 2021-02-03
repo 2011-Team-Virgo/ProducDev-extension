@@ -1,7 +1,7 @@
 const express = require("express");
-const addData = require("./users");
+const addData = require("./data");
 const router = express.Router();
 
-router.post("/", addData);
+router.post("/:uid", addData);
 
 module.exports = router;
