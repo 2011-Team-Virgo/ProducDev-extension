@@ -1,29 +1,45 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/database";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "producdev" is now active!');
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with registerCommand
-  // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand(
-    "producdev.helloWorld",
-    () => {
-      // The code you place here will be executed every time your command is executed
+  interface LooseObject {
+    [key: string]: any;
+  }
 
-      // Display a message box to the user
-      vscode.window.showInformationMessage("Hello World from ProducDev!");
+  let time: LooseObject = {};
+  let currentFile: string = "";
+  let timestamp: number = -1;
+
+  let keystrokes: LooseObject = {};
+
+  vscode.window.onDidChangeActiveTextEditor((event) => {
+    if (timestamp > 0 && currentFile) {
+      if (time[currentFile]) {
+        time[currentFile] += Date.now() - timestamp;
+      } else {
+        time[currentFile] = Date.now() - timestamp;
+      }
     }
-  );
+    timestamp = Date.now();
+    if (typeof event?.document.fileName === "string") {
+      currentFile = event?.document.fileName;
+    }
+    console.log(time);
+  });
 
-  context.subscriptions.push(disposable);
+  vscode.workspace.onDidChangeTextDocument((event) => {
+    if (currentFile) {
+      if (keystrokes[currentFile]) {
+        keystrokes[currentFile]++;
+      } else {
+        keystrokes[currentFile] = 1;
+      }
+    }
+  });
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() {}
