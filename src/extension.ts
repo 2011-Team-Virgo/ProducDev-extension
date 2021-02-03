@@ -1,7 +1,11 @@
 import * as vscode from "vscode";
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/database";
+import { authenticate } from "./authenticate";
+import { SidebarProvider } from "./SidebarProvider";
+import { TokenManager } from "./TokenManager";
+
+// import firebase from "firebase/app";
+// import "firebase/auth";
+// import "firebase/database";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "producdev" is now active!');
@@ -9,14 +13,14 @@ export function activate(context: vscode.ExtensionContext) {
   interface LooseObject {
     [key: string]: any;
   }
-
+  
   let time: LooseObject = {};
   let currentFile: string = "";
   let timestamp: number = -1;
 
   let keystrokes: LooseObject = {};
-
   vscode.window.onDidChangeActiveTextEditor((event) => {
+    
     if (timestamp > 0 && currentFile) {
       if (time[currentFile]) {
         time[currentFile] += Date.now() - timestamp;
