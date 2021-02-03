@@ -1,8 +1,10 @@
+const {apiKey, authDomain, databaseURL, storageBucket} = require("./.env.js")
+
 const dbConfig = {
-  apiKey: "AIzaSyAe9TREuTK9UgMRKcibsnRPZnH7VRIQqZE'",
-  authDomain: 'producdev-1277b.firebaseapp.com',
-  databaseURL: 'https://producdev-1277b-default-rtdb.firebaseio.com/',
-  storageBucket: 'producdev-1277b.appspot.com',
+  apiKey: apiKey,
+  authDomain: authDomain,
+  databaseURL: databaseURL,
+  storageBucket: storageBucket,
 };
 
 module.exports = dbConfig;
