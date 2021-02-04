@@ -1,6 +1,7 @@
 const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
+import axios from "axios";
 import { authenticate } from "./authenticate";
 import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
@@ -8,11 +9,13 @@ import { GitAuth } from "./GitAuth";
 // import {GoogleAuth} from "./GoogleAuth"
 
 export async function activate(context: vscode.ExtensionContext) {
+  console.log("Extension activated");
   const sidebarProvider = new SidebarProvider(context.extensionUri);
   // const googleauth = new GoogleAuth();
   // console.log(googleauth)
   const credentials = new GitAuth();
   await credentials.initialize(context);
+  let id: number;
 
   const disposable = vscode.commands.registerCommand(
     "extension.getGitHubUser",
@@ -25,7 +28,8 @@ export async function activate(context: vscode.ExtensionContext) {
        */
       const octokit = await credentials.getOctokit();
       const userInfo = await octokit.users.getAuthenticated();
-      const { id } = await userInfo.data;
+      id = await userInfo.data.id;
+      console.log(id);
       vscode.window.showInformationMessage(
         `Logged into GitHub as ${userInfo.data.login}`
       );
@@ -101,6 +105,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const payload = () => {
     const ts = dateFormat(new Date(), "yyyy-mm-dd_h:MM:ss");
     let res: LooseObject = {
+      id,
       [pkg.name]: { seconds: {}, keystrokes: {} },
       timestamp: ts,
     };
@@ -141,12 +146,15 @@ export async function activate(context: vscode.ExtensionContext) {
     return res;
   };
 
-  setInterval(() => {
+  setInterval(async () => {
     // run every 30 mins
     updateTime();
-    console.log(payload());
+    const pl = payload();
+    console.log(pl);
+    //createData(pl);
+    await axios.post(`/api/`, pl);
     setup();
-  }, 180000);
+  }, 10000);
 }
 
 export function deactivate() {}
