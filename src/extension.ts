@@ -3,13 +3,13 @@ import { authenticate } from "./authenticate";
 import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
 import {GitAuth} from "./GitAuth"
-import {GoogleAuth} from "./GoogleAuth"
+// import {GoogleAuth} from "./GoogleAuth"
 
 
 export async function activate(context: vscode.ExtensionContext) {
   const sidebarProvider = new SidebarProvider(context.extensionUri);
-  const googleauth = GoogleAuth();
-  console.log(googleauth)
+  // const googleauth = new GoogleAuth();
+  // console.log(googleauth)
   const credentials = new GitAuth();
 	await credentials.initialize(context);
   
