@@ -25,6 +25,8 @@ export const createData = obj => {
   }
 }
 
+export const getGithubId = () => {}
+
 export default function dataReducer(state = {}, action) {
   switch (action.type) {
     case SET_DATA:
