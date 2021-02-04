@@ -9,9 +9,8 @@ import { TokenManager } from "./TokenManager";
 
 export function activate(context: vscode.ExtensionContext) {
   const sidebarProvider = new SidebarProvider(context.extensionUri);
-
   TokenManager.globalState = context.globalState;
-
+  
   interface LooseObject {
     [key: string]: any;
   }

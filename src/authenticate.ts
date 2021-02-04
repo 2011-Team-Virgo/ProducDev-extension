@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { apiBaseUrl } from "./constants";
-import * as polka from "polka";
+// import * as polka from "polka";
 import { TokenManager } from "./TokenManager";
 
 export const authenticate = (fn: () => void) => {

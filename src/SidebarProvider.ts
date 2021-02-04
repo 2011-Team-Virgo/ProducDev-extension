@@ -64,6 +64,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
   public revive(panel: vscode.WebviewView) {
     this._view = panel;
+    console.log(panel)
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
