@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
+
 export const GoogleAuth = ()=>{
     let provider = new firebase.auth.GoogleAuthProvider();
     let user;
