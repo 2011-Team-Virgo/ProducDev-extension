@@ -50,6 +50,11 @@
         "command": "producdev.authenticate",
         "category": "ProducDev",
         "title": "Authenticate"
+      },
+      {
+        "command": "extension.getGitHubUser",
+        "title": "Get GitHub User",
+        "category": "GitHub Authentication Sample"
       }
     ]
   },
@@ -93,6 +98,7 @@
     "webpack-cli": "^4.2.0"
   },
   "dependencies": {
-    "firebase": "^8.2.5"
+    "firebase": "^8.2.5",
+    "@octokit/rest": "^18.0.0"
   }
 }
