@@ -1,9 +1,9 @@
-const firebase = require("firebase/app");
+
 const dbConfig = require("./dbConfig");
-const db = require("firebase/database");
+import firebase from "firebase/app";
+import "firebase/database";
 
-console.log(firebase)
 firebase.initializeApp(dbConfig);
-const database = firebase.database();
+const db = firebase.database();
 
-module.exports = database;
+export default db;

@@ -2,7 +2,7 @@ const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
 import axios from "axios";
-const database = require("./db/index");
+import {firebaseUpload} from './db/firebase'
 import { authenticate } from "./authenticate";
 // import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
@@ -14,6 +14,7 @@ export async function activate(context: vscode.ExtensionContext) {
   // const sidebarProvider = new SidebarProvider(context.extensionUri);
   // const googleauth = new GoogleAuth();
   // console.log(googleauth)
+
   const credentials = new GitAuth();
   await credentials.initialize(context);
   let id: number;
@@ -107,6 +108,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const ts = dateFormat(new Date(), "yyyy-mm-dd_h:MM:ss");
     let res: LooseObject = {
       id,
+      projectName:pkg.name,
       [pkg.name]: { seconds: {}, keystrokes: {} },
       timestamp: ts,
     };
@@ -146,25 +148,16 @@ export async function activate(context: vscode.ExtensionContext) {
     }*/
     return res;
   };
-  console.log(firebase.database())
-  const firebaseUpload =(payload:any )=>{
-    
-    console.log(payload)
-    // const user = await database
-    //   .ref(`users/${uid}/${projectName}/${type}`)
-    //   .set({ data });
-    // res.status(201).json(user);
-  }
+  
 
   setInterval(async () => {
     // run every 30 mins
     updateTime();
     const pl = payload();
-    console.log(pl);
-    // firebaseUpload(pl);
+    firebaseUpload(pl);
     //createData(pl);
     setup();
-  }, 100);
+  }, 100000);
 }
 
 export function deactivate() {}
