@@ -154,10 +154,16 @@ export async function activate(context: vscode.ExtensionContext) {
     // run every 30 mins
     updateTime();
     const pl = payload();
-    firebaseUpload(pl);
+    const obj = {
+      id: 12345,
+      projectName: "TEST_PROJECT",
+      type: "keystrokes",
+      data: {timestamp: 5000}
+    };
+    await axios.post("/api", obj);
     //createData(pl);
     setup();
-  }, 100000);
+  }, 1000);
 }
 
 export function deactivate() {}

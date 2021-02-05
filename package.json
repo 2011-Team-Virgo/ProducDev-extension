@@ -66,7 +66,7 @@
     "pretest": "npm run test-compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
-    "start": "nodemon server/index.js",
+    "start": "nodemon src/server/index.js",
     "build": "npm run lint && tsc"
   },
   "devDependencies": {
