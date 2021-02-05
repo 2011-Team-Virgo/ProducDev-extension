@@ -1,13 +1,13 @@
 const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
-import axios from "axios";
-import {firebaseUpload} from './db/firebase'
+import {firebaseUpload} from './db/firebase';
 import { authenticate } from "./authenticate";
 // import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
 import { GitAuth } from "./GitAuth";
 // import {GoogleAuth} from "./GoogleAuth"
+
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log("Extension activated");
@@ -155,13 +155,12 @@ export async function activate(context: vscode.ExtensionContext) {
     updateTime();
     const pl = payload();
     const obj = {
-      id: 12345,
+      id: 54321,
       projectName: "TEST_PROJECT",
       type: "keystrokes",
       data: {timestamp: 5000}
     };
-    await axios.post("/api", obj);
-    //createData(pl);
+    firebaseUpload(obj);
     setup();
   }, 1000);
 }
