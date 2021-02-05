@@ -2,15 +2,16 @@ const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
 import axios from "axios";
+const database = require("./db/index");
 import { authenticate } from "./authenticate";
-import { SidebarProvider } from "./SidebarProvider";
+// import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
 import { GitAuth } from "./GitAuth";
 // import {GoogleAuth} from "./GoogleAuth"
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log("Extension activated");
-  const sidebarProvider = new SidebarProvider(context.extensionUri);
+  // const sidebarProvider = new SidebarProvider(context.extensionUri);
   // const googleauth = new GoogleAuth();
   // console.log(googleauth)
   const credentials = new GitAuth();
@@ -125,7 +126,7 @@ export async function activate(context: vscode.ExtensionContext) {
         res[pkg.name].keystrokes[ts] += keystrokes[file];
       }
     }
-
+    
     // returns a payload sorted by file - possible future use?
     /*for (const file in time) {
       if (Object.prototype.hasOwnProperty.call(time, file)) {
@@ -145,16 +146,25 @@ export async function activate(context: vscode.ExtensionContext) {
     }*/
     return res;
   };
+  console.log(firebase.database())
+  const firebaseUpload =(payload:any )=>{
+    
+    console.log(payload)
+    // const user = await database
+    //   .ref(`users/${uid}/${projectName}/${type}`)
+    //   .set({ data });
+    // res.status(201).json(user);
+  }
 
   setInterval(async () => {
     // run every 30 mins
     updateTime();
     const pl = payload();
     console.log(pl);
+    // firebaseUpload(pl);
     //createData(pl);
-    await axios.post(`/api/`, pl);
     setup();
-  }, 10000);
+  }, 100);
 }
 
 export function deactivate() {}

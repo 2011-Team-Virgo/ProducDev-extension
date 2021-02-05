@@ -1,7 +1,7 @@
 "use strict";
 
 const firebase = require("firebase/app");
-const database = require("../db/index");
+const database = require("../../db/index");
 
 const addData = async (req, res, next) => {
   try {
