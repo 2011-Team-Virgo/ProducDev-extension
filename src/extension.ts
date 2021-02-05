@@ -7,6 +7,7 @@ import { authenticate } from "./authenticate";
 import { TokenManager } from "./TokenManager";
 import { GitAuth } from "./GitAuth";
 // import {GoogleAuth} from "./GoogleAuth"
+import axios from "axios";
 
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -108,9 +109,8 @@ export async function activate(context: vscode.ExtensionContext) {
     const ts = dateFormat(new Date(), "yyyy-mm-dd_h:MM:ss");
     let res: LooseObject = {
       id,
-      projectName:pkg.name,
       [pkg.name]: { seconds: {}, keystrokes: {} },
-      timestamp: ts,
+      // timestamp: ts,
     };
     for (const file in time) {
       if (Object.prototype.hasOwnProperty.call(time, file)) {
@@ -154,15 +154,17 @@ export async function activate(context: vscode.ExtensionContext) {
     // run every 30 mins
     updateTime();
     const pl = payload();
-    const obj = {
-      id: 54321,
-      projectName: "TEST_PROJECT",
-      type: "keystrokes",
-      data: {timestamp: 5000}
-    };
-    firebaseUpload(obj);
+    // const obj = {
+    //   id: id,
+    //   [pkg.name]:{
+
+    //   } ,
+    //   type: "keystrokes",
+    //   data: {timestamp: 5000}
+    // };
+    firebaseUpload(pl);
     setup();
-  }, 1000);
+  }, 10000);
 }
 
 export function deactivate() {}

@@ -4,9 +4,10 @@ const router = require("express").Router();
 const firebase = require("firebase/app");
 const db = require("../../db/index");
 
-router.post("/data", async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
     console.log("req.body ", req.body);
+    console.log("database ", db);
     const { id } = req.body;
     const { projectName } = req.body; // package.json name
     const { type } = req.body; // keystrokes or minutes
