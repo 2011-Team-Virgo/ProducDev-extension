@@ -36,23 +36,14 @@
     },
     "commands": [
       {
-        "command": "producdev.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "producdev.refresh",
+        "command": "producdev.getGoogleUser",
         "category": "ProducDev",
-        "title": "Refresh"
+        "title": "Login with Google"
       },
       {
-        "command": "producdev.authenticate",
-        "category": "ProducDev",
-        "title": "Authenticate"
-      },
-      {
-        "command": "extension.getGitHubUser",
-        "title": "Get GitHub User",
-        "category": "GitHub Authentication Sample"
+        "command": "producdev.getGitHubUser",
+        "title": "Login with Github",
+        "category": "ProducDev"
       }
     ]
   },
@@ -70,10 +61,6 @@
     "build": "npm run lint && tsc"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.0.1",
-    "@rollup/plugin-typescript": "^8.1.0",
-    "@tsconfig/svelte": "^1.0.10",
     "@types/glob": "^7.1.3",
     "@types/mocha": "^8.0.4",
     "@types/node": "^12.11.7",
@@ -85,9 +72,6 @@
     "eslint": "^7.15.0",
     "glob": "^7.1.6",
     "mocha": "^8.1.3",
-    "rollup": "^2.3.4",
-    "rollup-plugin-svelte": "^6.0.0",
-    "rollup-plugin-terser": "^7.0.2",
     "svelte": "^3.31.0",
     "svelte-check": "^1.1.23",
     "svelte-preprocess": "^4.6.1",
@@ -99,10 +83,11 @@
   },
   "dependencies": {
     "@octokit/rest": "^18.0.0",
+    "@rollup/plugin-node-resolve": "^11.1.1",
     "axios": "^0.21.1",
     "dateformat": "^4.5.1",
     "express": "^4.17.1",
-    "firebase": "^8.2.5",
+    "firebase": "^8.2.6",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",

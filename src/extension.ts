@@ -2,6 +2,7 @@ const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
 import {firebaseUpload} from './db/firebase';
+import githubAuth from './db/githubAuth';
 import { authenticate } from "./authenticate";
 // import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
@@ -12,16 +13,19 @@ import axios from "axios";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log("Extension activated");
+  authenticate();
+  githubAuth();
   // const sidebarProvider = new SidebarProvider(context.extensionUri);
   // const googleauth = new GoogleAuth();
   // console.log(googleauth)
+
 
   const credentials = new GitAuth();
   await credentials.initialize(context);
   let id: number;
 
   const disposable = vscode.commands.registerCommand(
-    "extension.getGitHubUser",
+    "producdev.getGitHubUser",
     async () => {
       /**
        * Octokit (https://github.com/octokit/rest.js#readme) is a library for making REST API
@@ -32,14 +36,23 @@ export async function activate(context: vscode.ExtensionContext) {
       const octokit = await credentials.getOctokit();
       const userInfo = await octokit.users.getAuthenticated();
       id = await userInfo.data.id;
-      console.log(id);
+
       vscode.window.showInformationMessage(
         `Logged into GitHub as ${userInfo.data.login}`
       );
     }
   );
+  const googleAuthDisp = vscode.commands.registerCommand(
+    "producdev.getGoogleUser",
+    async()=>{
+      vscode.window.showInformationMessage(
+        `I am a command (GoogleAuth)`
+      );
+    }
+  )
 
   context.subscriptions.push(disposable);
+  context.subscriptions.push(googleAuthDisp);
 
   TokenManager.globalState = context.globalState;
 
