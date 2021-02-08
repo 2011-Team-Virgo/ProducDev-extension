@@ -1,18 +1,21 @@
 const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
-import axios from "axios";
+import {firebaseUpload} from './db/firebase';
 import { authenticate } from "./authenticate";
-import { SidebarProvider } from "./SidebarProvider";
+// import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
 import { GitAuth } from "./GitAuth";
 // import {GoogleAuth} from "./GoogleAuth"
+import axios from "axios";
+
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log("Extension activated");
-  const sidebarProvider = new SidebarProvider(context.extensionUri);
+  // const sidebarProvider = new SidebarProvider(context.extensionUri);
   // const googleauth = new GoogleAuth();
   // console.log(googleauth)
+
   const credentials = new GitAuth();
   await credentials.initialize(context);
   let id: number;
@@ -126,13 +129,24 @@ export async function activate(context: vscode.ExtensionContext) {
     return res;
   };
 
+
   setInterval(async () => {
     // run every 30 mins
     updateTime();
     const pl = payload();
-    console.log(pl);
-    //createData(pl);
-    await axios.post(`/api/`, pl);
+    const timestamp = Date.now().toString();
+    const obj = {
+      id: 56789,
+      projectName: 'projectB',
+      file: 'fileB',
+      data: {
+        [timestamp]: {
+          keystrokes: 500,
+          minutes: 28,
+        }
+      }
+      };
+    firebaseUpload(obj);
     setup();
   }, 1800000);
 }

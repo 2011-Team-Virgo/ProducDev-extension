@@ -1,22 +1,22 @@
 "use strict";
+const router = require("express").Router();
 
 const firebase = require("firebase/app");
-const database = require("../db/index");
+const db = require("../../db/index");
 
-const addData = async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
-    console.log(req.body);
+    console.log("req.body ", req.body);
+    console.log("database ", db);
     const { id } = req.body;
     const { projectName } = req.body; // package.json name
     const { type } = req.body; // keystrokes or minutes
     const { data } = req.body; // object containing timestamp as a key and keystrokes or minutes value
-    const user = await database
-      .ref(`users/${uid}/${projectName}/${type}`)
-      .set({ data });
-    res.status(201).json(user);
+    await db.ref(`users/${id}/${projectName}/${type}`).set({ data });
+    res.status(201).send("created successfully");
   } catch (err) {
     console.error(err);
   }
-};
+});
 
-module.exports = addData;
+module.exports = router;
