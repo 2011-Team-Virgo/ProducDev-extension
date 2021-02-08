@@ -136,7 +136,7 @@ export async function activate(context: vscode.ExtensionContext) {
     const pl = payload();
     firebaseUpload(pl, pkg.name);
     setup();
-  }, 1800000);
+  }, 1800);
 }
 
 export function deactivate() {}
