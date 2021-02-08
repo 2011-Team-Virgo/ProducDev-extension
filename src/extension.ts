@@ -134,19 +134,7 @@ export async function activate(context: vscode.ExtensionContext) {
     // run every 30 mins
     updateTime();
     const pl = payload();
-    const timestamp = Date.now().toString();
-    const obj = {
-      id: 56789,
-      projectName: 'projectB',
-      file: 'fileB',
-      data: {
-        [timestamp]: {
-          keystrokes: 500,
-          minutes: 28,
-        }
-      }
-      };
-    firebaseUpload(obj);
+    firebaseUpload(pl, pkg.name);
     setup();
   }, 1800000);
 }
