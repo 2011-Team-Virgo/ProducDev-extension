@@ -122,62 +122,35 @@ export async function activate(context: vscode.ExtensionContext) {
     const ts = dateFormat(new Date(), "yyyy-mm-dd_h:MM:ss");
     let res: LooseObject = {
       id,
-      [pkg.name]: { seconds: {}, keystrokes: {} },
-      // timestamp: ts,
+      [pkg.name]: {},
     };
     for (const file in time) {
       if (Object.prototype.hasOwnProperty.call(time, file)) {
-        if (!res[pkg.name].seconds[ts]) {
-          res[pkg.name].seconds[ts] = 0;
-        }
-        res[pkg.name].seconds[ts] += Math.floor(time[file] / 1000);
-      }
-    }
-    for (const file in keystrokes) {
-      if (Object.prototype.hasOwnProperty.call(keystrokes, file)) {
-        if (!res[pkg.name].keystrokes[ts]) {
-          res[pkg.name].keystrokes[ts] = 0;
-        }
-        res[pkg.name].keystrokes[ts] += keystrokes[file];
-      }
-    }
-    
-    // returns a payload sorted by file - possible future use?
-    /*for (const file in time) {
-      if (Object.prototype.hasOwnProperty.call(time, file)) {
         if (!res[pkg.name][file]) {
-          res[pkg.name][file] = { time: 0, keystrokes: 0 };
+          res[pkg.name][file] = { [ts]: { keystrokes: 0, minutes: 0 } };
         }
-        res[pkg.name][file].time += time[file];
+        res[pkg.name][file][ts].minutes += Math.floor(time[file] / 60000);
       }
     }
     for (const file in keystrokes) {
       if (Object.prototype.hasOwnProperty.call(keystrokes, file)) {
         if (!res[pkg.name][file]) {
-          res[pkg.name][file] = { time: 0, keystrokes: 0 };
+          res[pkg.name][file] = { [ts]: { keystrokes: 0, minutes: 0 } };
         }
-        res[pkg.name][file].keystrokes += keystrokes[file];
+        res[pkg.name][file][ts].keystrokes += keystrokes[file];
       }
-    }*/
+    }
     return res;
   };
-  
+
 
   setInterval(async () => {
     // run every 30 mins
     updateTime();
     const pl = payload();
-    // const obj = {
-    //   id: id,
-    //   [pkg.name]:{
-
-    //   } ,
-    //   type: "keystrokes",
-    //   data: {timestamp: 5000}
-    // };
-    firebaseUpload(pl);
+    firebaseUpload(pl, pkg.name);
     setup();
-  }, 10000);
+  }, 1800);
 }
 
 export function deactivate() {}
