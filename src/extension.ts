@@ -1,14 +1,13 @@
 const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
-import {firebaseUpload} from './db/firebase';
+import { firebaseUpload } from "./db/firebase";
 import { authenticate } from "./authenticate";
 // import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
 import { GitAuth } from "./GitAuth";
 // import {GoogleAuth} from "./GoogleAuth"
 import axios from "axios";
-
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log("Extension activated");
@@ -115,7 +114,7 @@ export async function activate(context: vscode.ExtensionContext) {
         if (!res[pkg.name][file]) {
           res[pkg.name][file] = { [ts]: { keystrokes: 0, minutes: 0 } };
         }
-        res[pkg.name][file][ts].minutes += Math.floor(time[file] / 60000);
+        res[pkg.name][file][ts].minutes += (time[file] / 60000).toFixed(1);
       }
     }
     for (const file in keystrokes) {
@@ -129,12 +128,13 @@ export async function activate(context: vscode.ExtensionContext) {
     return res;
   };
 
-
   setInterval(async () => {
     // run every 30 mins
     updateTime();
-    const pl = payload();
-    firebaseUpload(pl, pkg.name);
+    if (id) {
+      const pl = payload();
+      firebaseUpload(pl, pkg.name);
+    }
     setup();
   }, 1800000);
 }
