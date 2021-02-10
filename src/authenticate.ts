@@ -2,8 +2,11 @@ import * as vscode from "vscode";
 import { apiBaseUrl } from "./constants";
 // import * as polka from "polka";
 import { TokenManager } from "./TokenManager";
+import firebase from "./db/"
 
-export const authenticate = (fn: () => void) => {
+export const authenticate = () => {
+  
+  console.log("authenticate", firebase)
   // const app = polka();
   // app.get(`/auth/:token`, async (req, res) => {
   //   const { token } = req.params;
