@@ -172,8 +172,7 @@ export async function activate(context: vscode.ExtensionContext) {
     updateTime(idleTime, idleStamp);
     if (id) {
       const pl = payload();
-      //firebaseUpload(pl, pkg.name);
-      console.log(pl);
+      firebaseUpload(pl, pkg.name);
     }
     setup();
   }, 900000);
