@@ -1,7 +1,7 @@
 const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
-import {firebaseUpload} from './db/firebase';
+import { firebaseUpload } from "./db/firebase";
 import githubAuth from './db/githubAuth';
 import { authenticate } from "./authenticate";
 // import { SidebarProvider } from "./SidebarProvider";
@@ -9,7 +9,6 @@ import { TokenManager } from "./TokenManager";
 import { GitAuth } from "./GitAuth";
 // import {GoogleAuth} from "./GoogleAuth"
 import axios from "axios";
-
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log("Extension activated");
@@ -64,9 +63,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
   let time: LooseObject;
   let keystrokes: LooseObject;
+  let idleTime: LooseObject;
   let currentFile: string = "";
   let timestamp: number = -1;
   let projectPath: string = "";
+  let idle = false;
+  let idleStamp = -1;
 
   if (vscode.workspace.workspaceFolders) {
     projectPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
@@ -82,7 +84,9 @@ export async function activate(context: vscode.ExtensionContext) {
   const setup = () => {
     time = {};
     keystrokes = {};
+    idleTime = {};
     timestamp = Date.now(); // this sets the timestamp and filename to start tracking time upon opening vs code
+    idle ? (idleStamp = Date.now()) : (idleStamp = -1);
     if (typeof vscode.window.activeTextEditor?.document.fileName === "string") {
       currentFile = vscode.window.activeTextEditor?.document.fileName.slice(
         projectPath.length
@@ -91,16 +95,34 @@ export async function activate(context: vscode.ExtensionContext) {
   };
   setup();
 
-  const updateTime = () => {
-    if (time[currentFile]) {
-      time[currentFile] += Date.now() - timestamp;
+  const updateTime = (obj: LooseObject, stamp: number) => {
+    if (obj[currentFile]) {
+      obj[currentFile] += Date.now() - stamp;
     } else {
-      time[currentFile] = Date.now() - timestamp;
+      obj[currentFile] = Date.now() - stamp;
     }
   };
+
+  const idleNow = () => {
+    idle = true;
+    console.log("Idling...");
+    idleStamp = Date.now();
+  };
+
+  const clearIdle = () => {
+    if (idleStamp !== -1) {
+      idle = false;
+      console.log("No longer idle.");
+      updateTime(idleTime, idleStamp);
+      idleStamp = -1;
+    }
+  };
+
+  let timer = setTimeout(idleNow, 300000);
+
   vscode.window.onDidChangeActiveTextEditor((event) => {
     if (timestamp > 0 && currentFile) {
-      updateTime();
+      updateTime(time, timestamp);
     }
     timestamp = Date.now();
     if (typeof event?.document.fileName === "string") {
@@ -115,6 +137,11 @@ export async function activate(context: vscode.ExtensionContext) {
       } else {
         keystrokes[currentFile] = 1;
       }
+      if (idle) {
+        clearIdle();
+      }
+      clearTimeout(timer);
+      timer = setTimeout(idleNow, 300000);
     }
   });
 
@@ -125,32 +152,46 @@ export async function activate(context: vscode.ExtensionContext) {
       [pkg.name]: {},
     };
     for (const file in time) {
-      if (Object.prototype.hasOwnProperty.call(time, file)) {
-        if (!res[pkg.name][file]) {
-          res[pkg.name][file] = { [ts]: { keystrokes: 0, minutes: 0 } };
-        }
-        res[pkg.name][file][ts].minutes += Math.floor(time[file] / 60000);
+      if (!res[pkg.name][file]) {
+        res[pkg.name][file] = {
+          [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
+        };
       }
+      res[pkg.name][file][ts].minutes += (time[file] / 60000).toFixed(2);
     }
     for (const file in keystrokes) {
-      if (Object.prototype.hasOwnProperty.call(keystrokes, file)) {
+      if (!res[pkg.name][file]) {
+        res[pkg.name][file] = {
+          [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
+        };
+      }
+      res[pkg.name][file][ts].keystrokes += keystrokes[file];
+    }
+    for (const file in idleTime) {
+      if (Object.prototype.hasOwnProperty.call(idleTime, file)) {
         if (!res[pkg.name][file]) {
-          res[pkg.name][file] = { [ts]: { keystrokes: 0, minutes: 0 } };
+          res[pkg.name][file] = {
+            [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
+          };
         }
-        res[pkg.name][file][ts].keystrokes += keystrokes[file];
+        res[pkg.name][file][ts].idleTime += (idleTime[file] / 60000).toFixed(2);
       }
     }
     return res;
   };
 
-
   setInterval(async () => {
     // run every 30 mins
-    updateTime();
-    const pl = payload();
-    firebaseUpload(pl, pkg.name);
+    updateTime(time, timestamp);
+    updateTime(idleTime, idleStamp);
+    if (id) {
+      const pl = payload();
+      firebaseUpload(pl, pkg.name);
+    }
     setup();
-  }, 1800);
+  }, 900000);
 }
 
-export function deactivate() {}
+export function deactivate() {
+  console.log("Extension deactivated.");
+}
