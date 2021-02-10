@@ -176,7 +176,7 @@ export async function activate(context: vscode.ExtensionContext) {
       console.log(pl);
     }
     setup();
-  }, 1800000);
+  }, 900000);
 }
 
 export function deactivate() {
