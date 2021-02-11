@@ -184,7 +184,6 @@ export function deactivate() {
   return new Promise((resolve) => {
     updateTime(time, timestamp);
     updateTime(idleTime, idleStamp);
-    console.log("id: " + id);
     if (id) {
       const pl = payload();
       firebaseUpload(pl, pkg.name);
