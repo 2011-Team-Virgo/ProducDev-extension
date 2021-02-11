@@ -2,7 +2,7 @@
   "name": "producdev",
   "displayName": "ProducDev",
   "description": "A developer productivity tool",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "fsa-producdev",
   "repository": {
     "type": "git",

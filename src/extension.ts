@@ -54,12 +54,10 @@ export async function activate(context: vscode.ExtensionContext) {
   );
   const googleAuthDisp = vscode.commands.registerCommand(
     "producdev.getGoogleUser",
-    async()=>{
-      vscode.window.showInformationMessage(
-        `I am a command (GoogleAuth)`
-      );
+    async () => {
+      vscode.window.showInformationMessage(`I am a command (GoogleAuth)`);
     }
-  )
+  );
 
   context.subscriptions.push(disposable);
   context.subscriptions.push(googleAuthDisp);
