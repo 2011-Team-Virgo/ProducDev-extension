@@ -1,4 +1,4 @@
-const {apiKey, authDomain, databaseURL, storageBucket} = require("./.env.js")
+const { apiKey, authDomain, databaseURL, storageBucket } = require("./.env.js");
 
 const dbConfig = {
   apiKey: apiKey,
