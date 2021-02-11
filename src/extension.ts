@@ -8,6 +8,31 @@ import { TokenManager } from "./TokenManager";
 import { GitAuth } from "./GitAuth";
 // import {GoogleAuth} from "./GoogleAuth"
 import axios from "axios";
+import { resolve } from "../build/node-extension.webpack.config";
+
+interface LooseObject {
+  [key: string]: any;
+}
+
+let pkg: LooseObject = { name: "PROJECT_NAME_UNKNOWN" };
+
+let id: number;
+let time: LooseObject;
+let keystrokes: LooseObject;
+let idleTime: LooseObject;
+let currentFile: string = "";
+let timestamp: number = -1;
+let projectPath: string = "";
+let idle = false;
+let idleStamp = -1;
+
+const updateTime = (obj: LooseObject, stamp: number) => {
+  if (obj[currentFile]) {
+    obj[currentFile] += Date.now() - stamp;
+  } else {
+    obj[currentFile] = Date.now() - stamp;
+  }
+};
 
 export async function activate(context: vscode.ExtensionContext) {
   console.log("Extension activated.");
@@ -17,7 +42,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const credentials = new GitAuth();
   await credentials.initialize(context);
-  let id: number;
 
   const disposable = vscode.commands.registerCommand(
     "extension.getGitHubUser",
@@ -40,21 +64,6 @@ export async function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 
   TokenManager.globalState = context.globalState;
-
-  interface LooseObject {
-    [key: string]: any;
-  }
-
-  let pkg: LooseObject = { name: "PROJECT_NAME_UNKNOWN" };
-
-  let time: LooseObject;
-  let keystrokes: LooseObject;
-  let idleTime: LooseObject;
-  let currentFile: string = "";
-  let timestamp: number = -1;
-  let projectPath: string = "";
-  let idle = false;
-  let idleStamp = -1;
 
   if (vscode.workspace.workspaceFolders) {
     projectPath = vscode.workspace.workspaceFolders[0].uri.fsPath;
@@ -80,14 +89,6 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   };
   setup();
-
-  const updateTime = (obj: LooseObject, stamp: number) => {
-    if (obj[currentFile]) {
-      obj[currentFile] += Date.now() - stamp;
-    } else {
-      obj[currentFile] = Date.now() - stamp;
-    }
-  };
 
   const idleNow = () => {
     idle = true;
@@ -131,41 +132,6 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   });
 
-  const payload = () => {
-    const ts = dateFormat(new Date(), "yyyy-mm-dd_h:MM:ss");
-    let res: LooseObject = {
-      id,
-      [pkg.name]: {},
-    };
-    for (const file in time) {
-      if (!res[pkg.name][file]) {
-        res[pkg.name][file] = {
-          [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
-        };
-      }
-      res[pkg.name][file][ts].minutes += (time[file] / 60000).toFixed(2);
-    }
-    for (const file in keystrokes) {
-      if (!res[pkg.name][file]) {
-        res[pkg.name][file] = {
-          [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
-        };
-      }
-      res[pkg.name][file][ts].keystrokes += keystrokes[file];
-    }
-    for (const file in idleTime) {
-      if (Object.prototype.hasOwnProperty.call(idleTime, file)) {
-        if (!res[pkg.name][file]) {
-          res[pkg.name][file] = {
-            [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
-          };
-        }
-        res[pkg.name][file][ts].idleTime += (idleTime[file] / 60000).toFixed(2);
-      }
-    }
-    return res;
-  };
-
   setInterval(async () => {
     // run every 30 mins
     updateTime(time, timestamp);
@@ -178,6 +144,51 @@ export async function activate(context: vscode.ExtensionContext) {
   }, 900000);
 }
 
+const payload = () => {
+  const ts = dateFormat(new Date(), "yyyy-mm-dd_h:MM:ss");
+  let res: LooseObject = {
+    id,
+    [pkg.name]: {},
+  };
+  for (const file in time) {
+    if (!res[pkg.name][file]) {
+      res[pkg.name][file] = {
+        [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
+      };
+    }
+    res[pkg.name][file][ts].minutes += (time[file] / 60000).toFixed(2);
+  }
+  for (const file in keystrokes) {
+    if (!res[pkg.name][file]) {
+      res[pkg.name][file] = {
+        [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
+      };
+    }
+    res[pkg.name][file][ts].keystrokes += keystrokes[file];
+  }
+  for (const file in idleTime) {
+    if (Object.prototype.hasOwnProperty.call(idleTime, file)) {
+      if (!res[pkg.name][file]) {
+        res[pkg.name][file] = {
+          [ts]: { keystrokes: 0, minutes: 0, idleTime: 0 },
+        };
+      }
+      res[pkg.name][file][ts].idleTime += (idleTime[file] / 60000).toFixed(2);
+    }
+  }
+  return res;
+};
+
 export function deactivate() {
-  console.log("Extension deactivated.");
+  console.log("Extension deactivating...");
+  return new Promise((resolve) => {
+    updateTime(time, timestamp);
+    updateTime(idleTime, idleStamp);
+    console.log("id: " + id);
+    if (id) {
+      const pl = payload();
+      firebaseUpload(pl, pkg.name);
+      resolve(pl);
+    }
+  });
 }
