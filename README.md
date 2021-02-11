@@ -16,6 +16,10 @@ Users are able to view their metrics at [this webpage.](https://producdev-1277b.
 
 ***
 ## Release Notes
+### 0.1.0
+
+Recorded metrics are now sent on extension deactivation if caught outside of an upload cycle
+
 ### 0.0.1
 
 Initial alpha publishing
