@@ -19,10 +19,6 @@ export const fetchData = () => {
 const _createData = (data) => ({ type: CREATE_DATA, data });
 
 export const createData = (obj) => {
-  /*//return async dispatch => {
-    const created = 
-    dispatch(_createData(created));
-  }*/
   console.log("thunk\n", obj);
 };
 
