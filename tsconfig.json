@@ -6,6 +6,8 @@
     "lib": ["es6"],
     "allowJs": true,
     "sourceMap": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "rootDir": "/..",
     "strict": true /* enable all strict type-checking options */
     /* Additional Checks */

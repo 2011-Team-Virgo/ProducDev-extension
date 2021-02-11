@@ -1,7 +1,9 @@
 const dbConfig = require("./dbConfig");
 const firebase = require("firebase/app");
 
+
+console.log(firebase)
 firebase.initializeApp(dbConfig);
 const db = firebase.database();
 
-module.exports = db;
+export default db;
