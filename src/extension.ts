@@ -2,20 +2,14 @@ const fs = require("fs");
 const dateFormat = require("dateformat");
 import * as vscode from "vscode";
 import { firebaseUpload } from "./db/firebase";
-import { authenticate } from "./authenticate";
-// import { SidebarProvider } from "./SidebarProvider";
 import { TokenManager } from "./TokenManager";
 import { GitAuth } from "./GitAuth";
-// import {GoogleAuth} from "./GoogleAuth"
-import axios from "axios";
-import { resolve } from "../build/node-extension.webpack.config";
 
 interface LooseObject {
   [key: string]: any;
 }
 
 let pkg: LooseObject = { name: "PROJECT_NAME_UNKNOWN" };
-
 let id: number;
 let time: LooseObject;
 let keystrokes: LooseObject;
@@ -35,10 +29,7 @@ const updateTime = (obj: LooseObject, stamp: number) => {
 };
 
 export async function activate(context: vscode.ExtensionContext) {
-  console.log("Extension activated.");
-  // const sidebarProvider = new SidebarProvider(context.extensionUri);
-  // const googleauth = new GoogleAuth();
-  // console.log(googleauth)
+  console.log("ProducDev activated.");
 
   const credentials = new GitAuth();
   await credentials.initialize(context);
@@ -54,7 +45,7 @@ export async function activate(context: vscode.ExtensionContext) {
        */
       const octokit = await credentials.getOctokit();
       const userInfo = await octokit.users.getAuthenticated();
-      id = await userInfo.data.id;
+      id = userInfo.data.id;
       vscode.window.showInformationMessage(
         `Logged into GitHub as ${userInfo.data.login}`
       );
@@ -105,7 +96,7 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   };
 
-  let timer = setTimeout(idleNow, 300000);
+  let timer = setTimeout(idleNow, 300000); // timeout after 5 mins
 
   vscode.window.onDidChangeActiveTextEditor((event) => {
     if (timestamp > 0 && currentFile) {
@@ -128,7 +119,7 @@ export async function activate(context: vscode.ExtensionContext) {
         clearIdle();
       }
       clearTimeout(timer);
-      timer = setTimeout(idleNow, 300000);
+      timer = setTimeout(idleNow, 300000); // reset on activity
     }
   });
 
@@ -180,7 +171,7 @@ const payload = () => {
 };
 
 export function deactivate() {
-  console.log("Extension deactivating...");
+  console.log("ProducDev deactivated.");
   return new Promise((resolve) => {
     updateTime(time, timestamp);
     updateTime(idleTime, idleStamp);
