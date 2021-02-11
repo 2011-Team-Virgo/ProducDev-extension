@@ -35,7 +35,7 @@ export async function activate(context: vscode.ExtensionContext) {
   await credentials.initialize(context);
 
   const disposable = vscode.commands.registerCommand(
-    "extension.getGitHubUser",
+    "producdev.getGitHubUser",
     async () => {
       /**
        * Octokit (https://github.com/octokit/rest.js#readme) is a library for making REST API
@@ -45,14 +45,24 @@ export async function activate(context: vscode.ExtensionContext) {
        */
       const octokit = await credentials.getOctokit();
       const userInfo = await octokit.users.getAuthenticated();
+
       id = userInfo.data.id;
       vscode.window.showInformationMessage(
         `Logged into GitHub as ${userInfo.data.login}`
       );
     }
   );
+  const googleAuthDisp = vscode.commands.registerCommand(
+    "producdev.getGoogleUser",
+    async()=>{
+      vscode.window.showInformationMessage(
+        `I am a command (GoogleAuth)`
+      );
+    }
+  )
 
   context.subscriptions.push(disposable);
+  context.subscriptions.push(googleAuthDisp);
 
   TokenManager.globalState = context.globalState;
 
