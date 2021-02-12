@@ -14,8 +14,14 @@ Any other metrics that are included will be added here.
 
 Users are able to view their metrics at [this webpage.](https://producdev-1277b.web.app/)
 
-***
+---
+
 ## Release Notes
+
+### 0.1.1
+
+Upload interval set to five minutes
+
 ### 0.1.0
 
 Recorded metrics are now sent on extension deactivation if caught outside of an upload cycle

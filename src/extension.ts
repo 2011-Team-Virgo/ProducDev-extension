@@ -132,7 +132,7 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   setInterval(async () => {
-    // run every 30 mins
+    // run every 5 mins
     updateTime(time, timestamp);
     updateTime(idleTime, idleStamp);
     if (id) {
@@ -140,7 +140,7 @@ export async function activate(context: vscode.ExtensionContext) {
       firebaseUpload(pl, pkg.name);
     }
     setup();
-  }, 900000);
+  }, 300000);
 }
 
 const payload = () => {
